@@ -1,4 +1,4 @@
-age,weight,heigth, marital_status ,children,education,work_conditions,experience ,smoking,physical_activity,sport,sleep_nigth,alcochol,alc_freq,alc_portion,ethanol_ml,diet,grind,nigth_work,social_load,work_in_hurry,high_demands,career_advancement,working environment,insecure_about_work,ergonomic_workpace,restroom,IBM,WORK,STRESS,HADS,AMS,MIEF-5,RISK
+age,weight,heigth,marital_status,children,education,work_conditions,experience,smoking,physical_activity,sport,sleep_nigth,alcochol,alc_freq,alc_portion,ethanol_ml,diet,grind,nigth_work,social_load,work_in_hurry,high_demands,career_advancement,working_environment,insecure_about_work,ergonomic_workpace,restroom,IBM,WORK,STRESS,HADS,AMS,MIEF-5,RISK
 35,75,170,0,0,2,1,10,0,0,0,8,0,,,,1,1,0,0,1,1,1,0,0,0,1,25.95,5,2,1,29,22,m_risk
 23,78,174,0,0,0,1,0,1,2,1,7,1,2,3,39,3,0,0,0,1,1,0,1,1,0,0,25.76,4,3,3,27,24,m_risk
 67,120,193,2,2,2,0,40,0,1,0,6,1,2,3,39,3,1,0,0,0,0,1,0,0,0,1,32.22,3,2,2,26,21,h_risk
