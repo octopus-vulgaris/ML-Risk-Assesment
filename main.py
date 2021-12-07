@@ -17,3 +17,21 @@ print(
     % (len(train_dataframe), len(val_dataframe))
 )
 
+def dataframe_to_dataset(dataframe):
+    dataframe = dataframe.copy()
+    labels = dataframe.pop("RISK")
+    ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
+    ds = ds.shuffle(buffer_size=len(dataframe))
+    return ds
+
+
+train_ds = dataframe_to_dataset(train_dataframe)
+val_ds = dataframe_to_dataset(val_dataframe)
+
+for x, y in train_ds.take(1):
+    print("Input:", x)
+    print("Target:", y)
+
+""" train_ds = train_ds.batch(32)
+val_ds = val_ds.batch(32) """
+
