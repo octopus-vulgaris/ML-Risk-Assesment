@@ -285,6 +285,7 @@ all_features = layers.concatenate(
         oldpeak_encoded,
     ]
 )
+
 x = layers.Dense(32, activation="relu")(all_features)
 x = layers.Dropout(0.5)(x)
 output = layers.Dense(1, activation="sigmoid")(x)
