@@ -77,70 +77,72 @@ def encode_categorical_feature(feature, name, dataset, is_string):
 
 # Categorical features encoded as integers
 
-cat_features_names = ["marital_status",
-"children",
-"education",
-"work_conditions",
-"smoking",
-"physical_activity",
-"sport",
-"alcochol",
-"alc_freq",
-"diet",
-"grind",
-"nigth_work",
-"social_load",
-"work_in_hurry",
-"high_demands",
-"career_advancement",
-"working_environment",
-"insecure_about_work",
-"ergonomic_workpace",
-"restroom"]
+cat_features_names = [
+    "marital_status",
+    "children",
+    "education",
+    "work_conditions",
+    "smoking",
+    "physical_activity",
+    "sport",
+    "alcochol",
+    "alc_freq",
+    "diet",
+    "grind",
+    "nigth_work",
+    "social_load",
+    "work_in_hurry",
+    "high_demands",
+    "career_advancement",
+    "working_environment",
+    "insecure_about_work",
+    "ergonomic_workpace",
+    "restroom"
+]
 
 # Numerical features
 
 num_features_names = [
-"age",
-"weight",
-"heigth",
-"experience" ,
-"sleep_nigth",
-"alc_portion",
-"IBM",
-"WORK",
-"STRES",
-"HADS",
-"AMS",
-"MIEF-5"
+    "age",
+    "weight",
+    "heigth",
+    "experience" ,
+    "sleep_nigth",
+    "alc_portion",
+    "IBM",
+    "WORK",
+    "STRESS",
+    "HADS",
+    "AMS",
+    "MIEF-5"
 ]
 
-def inputs(list):
+def inputs(list, dtype=None):
     all_inputs = []
     for x in list:
-        all_inputs.append(keras.Input(shape=(1,), name=x))
+        all_inputs.append(keras.Input(shape=(1,), name=x, dtype=dtype))
     return all_inputs
 
-cat_f_inputs = inputs(cat_features_names)
+cat_f_inputs = inputs(cat_features_names, "int64")
 num_f_inputs = inputs(num_features_names)
 
 all_inputs = cat_f_inputs + num_f_inputs
 
 
-def encode_cat_features(inputs, names):
+def encode_cat_features(inputs):
     features_encoded = []
     for x in inputs:
-        features_encoded.append(encode_categorical_feature(x, names[inputs.index(x)], train_ds, False))
+        features_encoded.append(encode_categorical_feature(x, x.name, train_ds, False))
     return features_encoded
 
-def encode_num_features(inputs, names):
+def encode_num_features(inputs):
     features_encoded = []
     for x in inputs:
-        features_encoded.append(encode_numerical_feature(x, names[inputs.index(x)], train_ds))
+        features_encoded.append(encode_numerical_feature(x, x.name, train_ds))
     return features_encoded    
 
-cat_features_encoded = encode_cat_features(cat_f_inputs, cat_features_names)
-num_features_encoded = encode_num_features(num_f_inputs, num_features_names)
+cat_features_encoded = encode_cat_features(cat_f_inputs)
+num_features_encoded = encode_num_features(num_f_inputs)
 
 all_features_pre = cat_features_encoded + num_features_encoded
 

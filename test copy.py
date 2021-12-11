@@ -207,6 +207,11 @@ def encode_categorical_feature(feature, name, dataset, is_string):
     encoded_feature = lookup(feature)
     return encoded_feature
 
+def inputs(list, dtype=None):
+    all_inputs = []
+    for x in list:
+        all_inputs.append(keras.Input(shape=(1,), name=x, dtype=dtype))
+    return all_inputs
 
 """
 ## Build a model
@@ -214,7 +219,20 @@ def encode_categorical_feature(feature, name, dataset, is_string):
 With this done, we can create our end-to-end model:
 """
 
-# Categorical features encoded as integers
+
+
+cat_features_int_names = [
+    "sex",
+    "cp",
+    "fbs",
+    "restecg",
+    "exang",
+    "ca",
+]
+
+cat_f_int_inputs = inputs(cat_features_int_names, "int64")
+
+# # Categorical features encoded as integers
 sex = keras.Input(shape=(1,), name="sex", dtype="int64")
 cp = keras.Input(shape=(1,), name="cp", dtype="int64")
 fbs = keras.Input(shape=(1,), name="fbs", dtype="int64")
@@ -222,8 +240,25 @@ restecg = keras.Input(shape=(1,), name="restecg", dtype="int64")
 exang = keras.Input(shape=(1,), name="exang", dtype="int64")
 ca = keras.Input(shape=(1,), name="ca", dtype="int64")
 
-# Categorical feature encoded as string
+cat_features_str_names = [
+    "thal"
+]
+
+cat_f_str_inputs = inputs(cat_features_str_names, "string")
+
+# # Categorical feature encoded as string
 thal = keras.Input(shape=(1,), name="thal", dtype="string")
+
+num_features_names = [
+    "age",
+    "trestbps",
+    "chol",
+    "thalach",
+    "oldpeak",
+    "slope",
+]
+
+num_f_inputs = inputs(num_features_names)
 
 # Numerical features
 age = keras.Input(shape=(1,), name="age")
@@ -248,6 +283,9 @@ all_inputs = [
     oldpeak,
     slope,
 ]
+
+all_inputs_new = cat_f_int_inputs + cat_f_str_inputs + num_f_inputs
+
 
 # Integer categorical features
 sex_encoded = encode_categorical_feature(sex, "sex", train_ds, False)
@@ -286,10 +324,40 @@ all_features = layers.concatenate(
     ]
 )
 
-x = layers.Dense(32, activation="relu")(all_features)
+
+def encode_cat_int_features(inputs):
+    features_encoded = []
+    for x in inputs:
+        features_encoded.append(encode_categorical_feature(x, x.name, train_ds, False))
+    return features_encoded
+
+def encode_cat_str_features(inputs):
+    features_encoded = []
+    for x in inputs:
+        features_encoded.append(encode_categorical_feature(x, x.name, train_ds, True))
+    return features_encoded
+
+def encode_num_features(inputs):
+    features_encoded = []
+    for x in inputs:
+        features_encoded.append(encode_numerical_feature(x, x.name, train_ds))
+    return features_encoded    
+
+
+cat_int_features_encoded = encode_cat_int_features(cat_f_int_inputs)
+cat_str_features_encoded = encode_cat_str_features(cat_f_str_inputs)
+num_features_encoded = encode_num_features(num_f_inputs)
+
+all_features_pre = cat_int_features_encoded + cat_str_features_encoded + num_features_encoded
+
+all_features_new = layers.concatenate(all_features_pre)
+
+
+
+x = layers.Dense(32, activation="relu")(all_features_new)
 x = layers.Dropout(0.5)(x)
 output = layers.Dense(1, activation="sigmoid")(x)
-model = keras.Model(all_inputs, output)
+model = keras.Model(all_inputs_new, output)
 model.compile("adam", "binary_crossentropy", metrics=["accuracy"])
 
 """
@@ -297,7 +365,7 @@ Let's visualize our connectivity graph:
 """
 
 # `rankdir='LR'` is to make the graph horizontal.
-keras.utils.plot_model(model, show_shapes=True, rankdir="LR")
+# keras.utils.plot_model(model, show_shapes=True, rankdir="LR")
 
 """
 ## Train the model
