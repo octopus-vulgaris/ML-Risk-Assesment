@@ -1,3 +1,3 @@
-# ML-Risk-Assesment
+# ML-Risk-Assessment
 
 Simple ML structured data classification
